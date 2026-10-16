@@ -1,0 +1,8 @@
+*.obj
+*.OBJ
+*.map
+*.MAP
+*.lst
+*.LST
+__pycache__/
+Thumbs.db
