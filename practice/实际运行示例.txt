@@ -1,0 +1,60 @@
+程序 EXCHANGE，输入 'ff'
+Please input a Hex number:
+ff
+
+The Dec number:
+255
+
+程序 EXCHANGE，输入 'A'
+Please input a Hex number:
+A
+
+The Dec number:
+10
+
+程序 EXCHANGE，输入 '00'
+Please input a Hex number:
+00
+
+The Dec number:
+0
+
+程序 EXCHANGE，输入 'aF'
+Please input a Hex number:
+aF
+
+The Dec number:
+175
+
+程序 EXCHANGE，输入 '100'
+Please input a Hex number:
+100
+
+Invalid input: enter 1 or 2 hex digits (0-9, A-F, a-f).
+
+程序 DEC2HEX，输入 '255'
+Please input a Dec number (0-65535):
+255
+
+The Hex number:
+FF
+
+程序 DEC2HEX，输入 '0'
+Please input a Dec number (0-65535):
+0
+
+The Hex number:
+0
+
+程序 DEC2HEX，输入 '65535'
+Please input a Dec number (0-65535):
+65535
+
+The Hex number:
+FFFF
+
+程序 DEC2HEX，输入 '65536'
+Please input a Dec number (0-65535):
+65536
+
+Invalid input: enter 1 to 5 decimal digits, value 0-65535.
