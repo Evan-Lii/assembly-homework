@@ -1,0 +1,155 @@
+C 版求和程序的真实反汇编与中文注释
+
+源文件 SUM_C.c；对应最终可执行文件 SUM_C.EXE。
+编译器为已有 TDM-GCC 4.9.2，32 位 x86 Windows，关闭优化便于对照源代码。
+编译：gcc -x c -m32 -O0 -g -Wall -Wextra -std=c90 SUM_C.c -o SUM_C.EXE
+反汇编：objdump -d -Mintel --insn-width=16 SUM_C.EXE
+以下地址、机器码与指令全部提取自最终 EXE；分号开头的中文为注释。
+完整原始内容见 C_FULL.TXT。本文件逐条解释求和函数，按源代码功能逐段解释主函数。
+这里使用 EAX、EBP、ESP 等 32 位寄存器，不能当作 16 位 DOS 反汇编。
+
+一 求和函数 sum_to
+参数 n 为 [ebp+8]，局部变量 i 为 [ebp-4]，total 为 [ebp-8]。
+进入函数后按 i=1、total=0 初始化，重复 total+=i、++i，直到 i>n。
+
+00401500 <_sum_to>:
+  401500:	55                                              	push   ebp  ; 保存调用者的 EBP。
+  401501:	89 e5                                           	mov    ebp,esp  ; 建立求和函数的栈帧。
+  401503:	83 ec 10                                        	sub    esp,0x10  ; 为局部变量预留 16 字节栈空间。
+  401506:	c7 45 f8 00 00 00 00                            	mov    DWORD PTR [ebp-0x8],0x0  ; total = 0，保存在 [ebp-8]。
+  40150d:	c7 45 fc 01 00 00 00                            	mov    DWORD PTR [ebp-0x4],0x1  ; i = 1，保存在 [ebp-4]。
+  401514:	eb 0a                                           	jmp    401520 <_sum_to+0x20>  ; 先检查 i <= n，再决定是否执行第一次循环。
+  401516:	8b 45 fc                                        	mov    eax,DWORD PTR [ebp-0x4]  ; 读取当前加数 i。
+  401519:	01 45 f8                                        	add    DWORD PTR [ebp-0x8],eax  ; total += i，实际逐项累加，没有直接返回常量 5050。
+  40151c:	83 45 fc 01                                     	add    DWORD PTR [ebp-0x4],0x1  ; ++i，为下一次循环准备。
+  401520:	8b 45 fc                                        	mov    eax,DWORD PTR [ebp-0x4]  ; 读取 i，准备比较循环条件。
+  401523:	3b 45 08                                        	cmp    eax,DWORD PTR [ebp+0x8]  ; 比较 i 与参数 n；n 位于 [ebp+8]。
+  401526:	76 ee                                           	jbe    401516 <_sum_to+0x16>  ; 无符号 i <= n 时继续循环，和 unsigned int 的类型一致。
+  401528:	8b 45 f8                                        	mov    eax,DWORD PTR [ebp-0x8]  ; 把求和结果放入 EAX，作为函数返回值。
+  40152b:	c9                                              	leave  ; 撤销栈帧并恢复 EBP。
+  40152c:	c3                                              	ret  ; 返回调用者 main。
+
+二 主函数 main
+
+0040152d <_main>:
+
+; 函数入口：保存 EBP，对齐 ESP，并为输入缓冲区、局部变量与调用参数预留栈空间。___main 是 MinGW 运行库初始化函数，不是递归调用用户 main。
+  40152d:	55                                              	push   ebp
+  40152e:	89 e5                                           	mov    ebp,esp
+  401530:	83 e4 f0                                        	and    esp,0xfffffff0
+  401533:	83 ec 70                                        	sub    esp,0x70
+  401536:	e8 55 0a 00 00                                  	call   401f90 <___main>
+
+; 初始化 n=0、digits=0。n 位于 [esp+68h]，digits 位于 [esp+64h]。
+  40153b:	c7 44 24 68 00 00 00 00                         	mov    DWORD PTR [esp+0x68],0x0
+  401543:	c7 44 24 64 00 00 00 00                         	mov    DWORD PTR [esp+0x64],0x0
+
+; 向 puts 传入输入提示字符串的地址，并显示提示。
+  40154b:	c7 04 24 00 40 40 00                            	mov    DWORD PTR [esp],0x404000
+  401552:	e8 b1 11 00 00                                  	call   402708 <_puts>
+
+; 准备 fgets 的三个参数：输入缓冲区 [esp+14h] 的地址、容量 80、stdin，然后调用 fgets。
+  401557:	a1 84 61 40 00                                  	mov    eax,ds:0x406184
+  40155c:	89 44 24 08                                     	mov    DWORD PTR [esp+0x8],eax
+  401560:	c7 44 24 04 50 00 00 00                         	mov    DWORD PTR [esp+0x4],0x50
+  401568:	8d 44 24 14                                     	lea    eax,[esp+0x14]
+  40156c:	89 04 24                                        	mov    DWORD PTR [esp],eax
+  40156f:	e8 9c 11 00 00                                  	call   402710 <_fgets>
+
+; 检查 fgets 的返回值。为 NULL 表示未读到输入，跳转到错误处理 401626h。
+  401574:	85 c0                                           	test   eax,eax
+  401576:	75 05                                           	jne    40157d <_main+0x50>
+  401578:	e9 a9 00 00 00                                  	jmp    401626 <_main+0xf9>
+
+; 令 p 指向输入缓冲区开头，p 保存在 [esp+6Ch]；先跳到字符循环的条件判断。
+  40157d:	8d 44 24 14                                     	lea    eax,[esp+0x14]
+  401581:	89 44 24 6c                                     	mov    DWORD PTR [esp+0x6c],eax
+  401585:	eb 51                                           	jmp    4015d8 <_main+0xab>
+
+; 检查当前字符是否为数字。低于字符 0 或高于字符 9 的输入均转到错误处理；比较常量 2Fh 表示字符 0 之前的值。
+  401587:	8b 44 24 6c                                     	mov    eax,DWORD PTR [esp+0x6c]
+  40158b:	0f b6 00                                        	movzx  eax,BYTE PTR [eax]
+  40158e:	3c 2f                                           	cmp    al,0x2f
+  401590:	0f 8e 90 00 00 00                               	jle    401626 <_main+0xf9>
+  401596:	8b 44 24 6c                                     	mov    eax,DWORD PTR [esp+0x6c]
+  40159a:	0f b6 00                                        	movzx  eax,BYTE PTR [eax]
+  40159d:	3c 39                                           	cmp    al,0x39
+  40159f:	0f 8f 81 00 00 00                               	jg     401626 <_main+0xf9>
+
+; 检查是否已经读过 3 位；若还有第四位，拒绝输入。通过检查后执行 ++digits。
+  4015a5:	83 7c 24 64 03                                  	cmp    DWORD PTR [esp+0x64],0x3
+  4015aa:	74 7a                                           	je     401626 <_main+0xf9>
+  4015ac:	83 44 24 64 01                                  	add    DWORD PTR [esp+0x64],0x1
+
+; 把原 n 乘以 10：先左移两位得到 4n，再加 n 得 5n，最后加自身得 10n。编译器使用移位和加法实现常量乘法。
+  4015b1:	8b 54 24 68                                     	mov    edx,DWORD PTR [esp+0x68]
+  4015b5:	89 d0                                           	mov    eax,edx
+  4015b7:	c1 e0 02                                        	shl    eax,0x2
+  4015ba:	01 d0                                           	add    eax,edx
+  4015bc:	01 c0                                           	add    eax,eax
+  4015be:	89 c2                                           	mov    edx,eax
+
+; 读取字符并减去 30h，即减去 ASCII 字符 0。与 10n 相加后写回 n，实现 n=n*10+digit。
+  4015c0:	8b 44 24 6c                                     	mov    eax,DWORD PTR [esp+0x6c]
+  4015c4:	0f b6 00                                        	movzx  eax,BYTE PTR [eax]
+  4015c7:	0f be c0                                        	movsx  eax,al
+  4015ca:	01 d0                                           	add    eax,edx
+  4015cc:	83 e8 30                                        	sub    eax,0x30
+  4015cf:	89 44 24 68                                     	mov    DWORD PTR [esp+0x68],eax
+
+; 指针 p 前进一个字符。
+  4015d3:	83 44 24 6c 01                                  	add    DWORD PTR [esp+0x6c],0x1
+
+; 判断 *p 是否为字符串结束符 00h，或换行符 0Ah。都不是时跳回字符循环，继续解析。
+  4015d8:	8b 44 24 6c                                     	mov    eax,DWORD PTR [esp+0x6c]
+  4015dc:	0f b6 00                                        	movzx  eax,BYTE PTR [eax]
+  4015df:	84 c0                                           	test   al,al
+  4015e1:	74 0b                                           	je     4015ee <_main+0xc1>
+  4015e3:	8b 44 24 6c                                     	mov    eax,DWORD PTR [esp+0x6c]
+  4015e7:	0f b6 00                                        	movzx  eax,BYTE PTR [eax]
+  4015ea:	3c 0a                                           	cmp    al,0xa
+  4015ec:	75 99                                           	jne    401587 <_main+0x5a>
+
+; 最终检查：digits 不能为 0，n 不能为 0，也不能超过 100（64h）。非法输入统一跳到 401626h。
+  4015ee:	83 7c 24 64 00                                  	cmp    DWORD PTR [esp+0x64],0x0
+  4015f3:	74 31                                           	je     401626 <_main+0xf9>
+  4015f5:	83 7c 24 68 00                                  	cmp    DWORD PTR [esp+0x68],0x0
+  4015fa:	74 2a                                           	je     401626 <_main+0xf9>
+  4015fc:	83 7c 24 68 64                                  	cmp    DWORD PTR [esp+0x68],0x64
+  401601:	77 23                                           	ja     401626 <_main+0xf9>
+
+; 读取 n 并传给 sum_to。CALL 401500h 后，EAX 是实际求得的 1+...+n。
+  401603:	8b 44 24 68                                     	mov    eax,DWORD PTR [esp+0x68]
+  401607:	89 04 24                                        	mov    DWORD PTR [esp],eax
+  40160a:	e8 f1 fe ff ff                                  	call   401500 <_sum_to>
+
+; 将返回的和作为 printf 的第二个参数，第一个参数为结果提示与 %u 格式字符串，随后显示十进制结果。
+  40160f:	89 44 24 04                                     	mov    DWORD PTR [esp+0x4],eax
+  401613:	c7 04 24 18 40 40 00                            	mov    DWORD PTR [esp],0x404018
+  40161a:	e8 f9 10 00 00                                  	call   402718 <_printf>
+
+; 成功路径：main 返回 0，并跳过错误处理。
+  40161f:	b8 00 00 00 00                                  	mov    eax,0x0
+  401624:	eb 11                                           	jmp    401637 <_main+0x10a>
+
+; 错误路径：输出 Invalid input 提示，并令 main 返回 1；不输出一个错误的和。
+  401626:	c7 04 24 2c 40 40 00                            	mov    DWORD PTR [esp],0x40402c
+  40162d:	e8 d6 10 00 00                                  	call   402708 <_puts>
+  401632:	b8 01 00 00 00                                  	mov    eax,0x1
+
+; 恢复 main 的栈帧并返回 C 运行库；随后的 NOP/XCHG AX,AX 是代码对齐填充。
+  401637:	c9                                              	leave
+  401638:	c3                                              	ret
+  401639:	90                                              	nop
+  40163a:	90                                              	nop
+  40163b:	90                                              	nop
+  40163c:	66 90                                           	xchg   ax,ax
+  40163e:	66 90                                           	xchg   ax,ax
+
+理解要点
+1. sum_to 使用栈内局部变量保存 total，这与 SUM_STK.ASM 中的栈变量在概念上对应，位宽和栈帧布局不同。
+2. C 的 for 循环被翻译为初始化、ADD、CMP、JBE 等指令，未使用 LOOP。
+3. unsigned int 的比较使用无符号条件跳转；JBE 的含义是小于或等于。
+4. C 使用 fgets 与 printf；DOS 汇编版使用 INT 21h 的 0Ah、09h、02h 功能。
+5. 输入范围验证在 main 中完成，sum_to 接收已经验证过的 n。
+6. 改动源代码、编译器或编译选项后，地址和指令可能变化，应重新提取并核对注释。

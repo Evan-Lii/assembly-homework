@@ -1,0 +1,64 @@
+程序 SUM
+5050
+
+程序 SUM_DATA
+5050
+
+程序 SUM_STK
+5050
+
+程序 SUM_N，输入 1
+Please input n (1-100):
+1
+
+The sum number:
+1
+
+程序 SUM_C，输入 1
+Please input n (1-100):
+The sum number:
+1
+
+程序 SUM_N，输入 10
+Please input n (1-100):
+10
+
+The sum number:
+55
+
+程序 SUM_C，输入 10
+Please input n (1-100):
+The sum number:
+55
+
+程序 SUM_N，输入 100
+Please input n (1-100):
+100
+
+The sum number:
+5050
+
+程序 SUM_C，输入 100
+Please input n (1-100):
+The sum number:
+5050
+
+程序 SUM_N，输入 0
+Please input n (1-100):
+0
+
+Invalid input: enter 1 to 3 digits, value 1-100.
+
+程序 SUM_C，输入 0
+Please input n (1-100):
+Invalid input: enter 1 to 3 digits, value 1-100.
+
+程序 SUM_N，输入 101
+Please input n (1-100):
+101
+
+Invalid input: enter 1 to 3 digits, value 1-100.
+
+程序 SUM_C，输入 101
+Please input n (1-100):
+Invalid input: enter 1 to 3 digits, value 1-100.
