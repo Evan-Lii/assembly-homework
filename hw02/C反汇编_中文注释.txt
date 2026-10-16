@@ -1,0 +1,57 @@
+C 语言实现的真实反汇编与中文注释
+
+源文件：ASCII_C.c；目标文件：ASCII_C.EXE。
+编译器：本机 Dev-C++ 自带的 TDM-GCC 4.9.2，目标为 32 位 x86 Windows。
+编译：gcc -x c -m32 -O0 -g -Wall -Wextra -std=c90 ASCII_C.c -o ASCII_C.EXE
+反汇编：objdump -d -Mintel --insn-width=16 ASCII_C.EXE
+以下地址、机器码和指令逐行提取自该可执行文件；分号后的中文为人工注释。
+完整原始反汇编保存在 C_FULL.TXT；这里只解释作业对应的 main 函数。
+注意：这是 32 位 C 程序的反汇编，不是 16 位 DOS 汇编；不要在 DOSBox 中运行 ASCII_C.EXE。
+
+局部变量位置（main 栈空间分配完成后）：
+  BYTE PTR  [esp+17h]：ch，当前字母。
+  DWORD PTR [esp+18h]：col，当前行的列号。
+  DWORD PTR [esp+1Ch]：row，当前行号。
+  DWORD PTR [esp]    ：调用 putchar 时的参数位置。
+
+00401500 <_main>:
+  401500:	55                                              	push   ebp  ; 保存调用者的 EBP。
+  401501:	89 e5                                           	mov    ebp,esp  ; 建立 main 的栈帧，EBP 记录原栈位置。
+  401503:	83 e4 f0                                        	and    esp,0xfffffff0  ; 将 ESP 按 16 字节边界对齐。
+  401506:	83 ec 20                                        	sub    esp,0x20  ; 在栈上保留 32 字节，存放局部变量和调用参数。
+  401509:	e8 c2 09 00 00                                  	call   401ed0 <___main>  ; 调用 MinGW 运行库初始化函数 ___main，不是递归调用用户 main。
+  40150e:	c6 44 24 17 61                                  	mov    BYTE PTR [esp+0x17],0x61  ; ch = 'a'，ASCII 码为 61h，即十进制 97。
+  401513:	c7 44 24 1c 00 00 00 00                         	mov    DWORD PTR [esp+0x1c],0x0  ; 外层循环初始化：row = 0。
+  40151b:	eb 53                                           	jmp    401570 <_main+0x70>  ; 先跳到外层循环条件判断，符合 for 先判断后执行的语义。
+  40151d:	c7 44 24 18 00 00 00 00                         	mov    DWORD PTR [esp+0x18],0x0  ; 每行开始时，内层循环初始化：col = 0。
+  401525:	eb 31                                           	jmp    401558 <_main+0x58>  ; 先跳到内层循环条件判断。
+  401527:	0f be 44 24 17                                  	movsx  eax,BYTE PTR [esp+0x17]  ; 读取 1 字节的 ch，符号扩展到 32 位，作为 putchar 的 int 参数。
+  40152c:	89 04 24                                        	mov    DWORD PTR [esp],eax  ; 把待输出字符放到栈上的函数参数位置。
+  40152f:	e8 14 11 00 00                                  	call   402648 <_putchar>  ; 调用 putchar(ch)，输出当前小写字母。
+  401534:	0f b6 44 24 17                                  	movzx  eax,BYTE PTR [esp+0x17]  ; 读取 ch，为递增准备数值。
+  401539:	83 c0 01                                        	add    eax,0x1  ; 字符编码加 1。
+  40153c:	88 44 24 17                                     	mov    BYTE PTR [esp+0x17],al  ; 把低 8 位写回 ch，完成 ++ch。
+  401540:	83 7c 24 18 0b                                  	cmp    DWORD PTR [esp+0x18],0xb  ; 将 col 与 11 比较；col < 12 等价于 col <= 11。
+  401545:	7f 0c                                           	jg     401553 <_main+0x53>  ; 若 col > 11，跳过空格输出，避免行末空格。
+  401547:	c7 04 24 20 00 00 00                            	mov    DWORD PTR [esp],0x20  ; 参数为 20h，即空格的 ASCII 码 32。
+  40154e:	e8 f5 10 00 00                                  	call   402648 <_putchar>  ; 调用 putchar(' ')，输出字母之间的一个空格。
+  401553:	83 44 24 18 01                                  	add    DWORD PTR [esp+0x18],0x1  ; 内层循环递增：++col。
+  401558:	83 7c 24 18 0c                                  	cmp    DWORD PTR [esp+0x18],0xc  ; 将 col 与 12 比较；col < 13 等价于 col <= 12。
+  40155d:	7e c8                                           	jle    401527 <_main+0x27>  ; col <= 12 时回到内层循环体，因此 col 取 0 到 12，共 13 次。
+  40155f:	c7 04 24 0a 00 00 00                            	mov    DWORD PTR [esp],0xa  ; 参数为 0Ah，即换行字符 LF。Windows 文本输出会转换为 CR/LF。
+  401566:	e8 dd 10 00 00                                  	call   402648 <_putchar>  ; 调用 putchar('\n')，结束当前行。
+  40156b:	83 44 24 1c 01                                  	add    DWORD PTR [esp+0x1c],0x1  ; 外层循环递增：++row。
+  401570:	83 7c 24 1c 01                                  	cmp    DWORD PTR [esp+0x1c],0x1  ; 将 row 与 1 比较；row < 2 等价于 row <= 1。
+  401575:	7e a6                                           	jle    40151d <_main+0x1d>  ; row <= 1 时回到下一行的初始化，因此外层共执行两次。
+  401577:	b8 00 00 00 00                                  	mov    eax,0x0  ; 把 main 的返回值 0 放入 EAX。
+  40157c:	c9                                              	leave  ; 恢复 ESP 和调用者的 EBP，撤销当前栈帧。
+  40157d:	c3                                              	ret  ; 返回 C 运行库启动代码。
+  40157e:	90                                              	nop  ; 编译器生成的对齐填充，不属于循环逻辑。
+  40157f:	90                                              	nop  ; 编译器生成的对齐填充，不属于循环逻辑。
+
+理解要点：
+1. C 的两层 for 循环被翻译为初始化、比较、条件跳转和递增指令。
+2. 编译器在本次 -O0 编译中使用 CMP/JLE，而没有使用 LOOP 指令。
+3. putchar 调用通过 Windows C 运行库输出；DOS 汇编版使用 INT 21h/AH=02h。
+4. EAX、ESP、EBP 是 32 位寄存器，与 DOS 版的 AX、SP、BP 位宽不同。
+5. 若改动源码、编译选项或编译器，地址与指令可能改变，须重新提取和核对注释。

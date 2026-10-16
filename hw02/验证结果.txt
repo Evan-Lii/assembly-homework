@@ -1,0 +1,6 @@
+验证通过：两份汇编源码均由 MASM 5.10 汇编、LINK 链接，无警告、无错误。
+三份实际程序输出逐字节一致，均为 54 字节（含空格和两组 CR/LF）。
+内容：a 到 z，仅两行，每行 13 个字母，字母间一个空格，无行末空格。
+LOOP13 的两层循环使用 LOOP；JUMP13 的两层循环使用 DEC/JNZ。
+C 版：已有 TDM-GCC 4.9.2，32 位 x86，-O0，-Wall -Wextra -std=c90。
+验证依据：LOOPASM.LOG、LOOPLNK.LOG、JUMPASM.LOG、JUMPLNK.LOG，以及 LOOP.OUT、JUMP.OUT、C.OUT。
