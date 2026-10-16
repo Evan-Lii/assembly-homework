@@ -1,0 +1,8 @@
+验证通过
+HELLO.ASM 由 MASM 5.10 汇编、LINK 3.65 链接，无警告、无错误。
+HELLO.EXE 是真实 16 位 DOS MZ 文件，直接输出 12 字节 helloworld 加回车换行。
+DEBUG 2.50 已加载该 EXE，用 U 反汇编、T 初始化数据段、D 检查字符串并 G 执行。
+第二种方式未加载 EXE，未使用 A 命令；两个 E 命令直接写入 14 字节代码和 13 字节数据。
+DEBUG U 验证代码指令，D 验证字符串，以 G=100 执行并正常退出。
+两种方式均实际输出 helloworld，DEBUG 均报告退出码 0000。
+证据文件：ASM.LOG、LINK.LOG、HELLO.OUT、EXEU.LOG、MEME.LOG。
