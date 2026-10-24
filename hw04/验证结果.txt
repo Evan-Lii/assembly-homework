@@ -1,0 +1,10 @@
+验证通过
+MUL9.ASM 和 REGTEST.ASM 均由 MASM 5.10 汇编、LINK 3.65 链接，无警告、无错误。
+DOS 程序在官方 DOSBox Staging 0.83.0 x64 中实际执行；C 版在 Windows x64 中实际执行。
+两个版本输出逐字节一致，包含标题和 9 行乘法式，从 9 行递减到 1 行。
+45 个算式逐项与独立数学结果核对；最后一行是 1*1=1，无行末空格。
+REGTEST 对 3 次 PrintCell、5 次 PrintDec、1 次 PutChar 调用核对寄存器和栈平衡，返回成功。
+核对 AX、BX、CX、DX、SI、DI、BP 和 SP；PrintDec 另测 0、9、10、81、65535。
+真实 DOS 可执行代码含 MUL BL、CALL 和 RET，C 反汇编含乘法和函数调用、返回指令。
+C 两个用户函数共 56 条实际指令已逐条核对 EXE 机器码并添加中文注释。
+验证依据：ASM.OUT、C.OUT、REG.OUT、四份汇编链接日志、C_BUILD.LOG。
