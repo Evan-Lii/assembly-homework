@@ -1,0 +1,156 @@
+
+print_error:
+  0000000140001000: 89 54 24 10        mov         dword ptr [rsp+10h],edx
+  0000000140001004: 89 4C 24 08        mov         dword ptr [rsp+8],ecx
+  0000000140001008: 48 83 EC 28        sub         rsp,28h
+  000000014000100C: 44 8B 44 24 38     mov         r8d,dword ptr [rsp+38h]
+  0000000140001011: 8B 54 24 30        mov         edx,dword ptr [rsp+30h]
+  0000000140001015: 48 8D 0D E4 FF 01  lea         rcx,[0000000140021000h]
+                    00
+  000000014000101C: E8 CF 02 00 00     call        00000001400012F0
+  0000000140001021: 90                 nop
+  0000000140001022: 48 83 C4 28        add         rsp,28h
+  0000000140001026: C3                 ret
+
+main:
+  0000000140001030: 48 81 EC A8 00 00  sub         rsp,0A8h
+                    00
+  0000000140001037: 48 8B 05 02 00 02  mov         rax,qword ptr [0000000140021040h]
+                    00
+  000000014000103E: 48 33 C4           xor         rax,rsp
+  0000000140001041: 48 89 84 24 90 00  mov         qword ptr [rsp+0000000000000090h],rax
+                    00 00
+  0000000140001049: C6 44 24 30 07     mov         byte ptr [rsp+30h],7
+  000000014000104E: C6 44 24 31 02     mov         byte ptr [rsp+31h],2
+  0000000140001053: C6 44 24 32 03     mov         byte ptr [rsp+32h],3
+  0000000140001058: C6 44 24 33 04     mov         byte ptr [rsp+33h],4
+  000000014000105D: C6 44 24 34 05     mov         byte ptr [rsp+34h],5
+  0000000140001062: C6 44 24 35 06     mov         byte ptr [rsp+35h],6
+  0000000140001067: C6 44 24 36 07     mov         byte ptr [rsp+36h],7
+  000000014000106C: C6 44 24 37 08     mov         byte ptr [rsp+37h],8
+  0000000140001071: C6 44 24 38 09     mov         byte ptr [rsp+38h],9
+  0000000140001076: C6 44 24 39 02     mov         byte ptr [rsp+39h],2
+  000000014000107B: C6 44 24 3A 04     mov         byte ptr [rsp+3Ah],4
+  0000000140001080: C6 44 24 3B 07     mov         byte ptr [rsp+3Bh],7
+  0000000140001085: C6 44 24 3C 08     mov         byte ptr [rsp+3Ch],8
+  000000014000108A: C6 44 24 3D 0A     mov         byte ptr [rsp+3Dh],0Ah
+  000000014000108F: C6 44 24 3E 0C     mov         byte ptr [rsp+3Eh],0Ch
+  0000000140001094: C6 44 24 3F 0E     mov         byte ptr [rsp+3Fh],0Eh
+  0000000140001099: C6 44 24 40 10     mov         byte ptr [rsp+40h],10h
+  000000014000109E: C6 44 24 41 12     mov         byte ptr [rsp+41h],12h
+  00000001400010A3: C6 44 24 42 03     mov         byte ptr [rsp+42h],3
+  00000001400010A8: C6 44 24 43 06     mov         byte ptr [rsp+43h],6
+  00000001400010AD: C6 44 24 44 09     mov         byte ptr [rsp+44h],9
+  00000001400010B2: C6 44 24 45 0C     mov         byte ptr [rsp+45h],0Ch
+  00000001400010B7: C6 44 24 46 0F     mov         byte ptr [rsp+46h],0Fh
+  00000001400010BC: C6 44 24 47 12     mov         byte ptr [rsp+47h],12h
+  00000001400010C1: C6 44 24 48 15     mov         byte ptr [rsp+48h],15h
+  00000001400010C6: C6 44 24 49 18     mov         byte ptr [rsp+49h],18h
+  00000001400010CB: C6 44 24 4A 1B     mov         byte ptr [rsp+4Ah],1Bh
+  00000001400010D0: C6 44 24 4B 04     mov         byte ptr [rsp+4Bh],4
+  00000001400010D5: C6 44 24 4C 08     mov         byte ptr [rsp+4Ch],8
+  00000001400010DA: C6 44 24 4D 0C     mov         byte ptr [rsp+4Dh],0Ch
+  00000001400010DF: C6 44 24 4E 10     mov         byte ptr [rsp+4Eh],10h
+  00000001400010E4: C6 44 24 4F 07     mov         byte ptr [rsp+4Fh],7
+  00000001400010E9: C6 44 24 50 18     mov         byte ptr [rsp+50h],18h
+  00000001400010EE: C6 44 24 51 1C     mov         byte ptr [rsp+51h],1Ch
+  00000001400010F3: C6 44 24 52 20     mov         byte ptr [rsp+52h],20h
+  00000001400010F8: C6 44 24 53 24     mov         byte ptr [rsp+53h],24h
+  00000001400010FD: C6 44 24 54 05     mov         byte ptr [rsp+54h],5
+  0000000140001102: C6 44 24 55 0A     mov         byte ptr [rsp+55h],0Ah
+  0000000140001107: C6 44 24 56 0F     mov         byte ptr [rsp+56h],0Fh
+  000000014000110C: C6 44 24 57 14     mov         byte ptr [rsp+57h],14h
+  0000000140001111: C6 44 24 58 19     mov         byte ptr [rsp+58h],19h
+  0000000140001116: C6 44 24 59 1E     mov         byte ptr [rsp+59h],1Eh
+  000000014000111B: C6 44 24 5A 23     mov         byte ptr [rsp+5Ah],23h
+  0000000140001120: C6 44 24 5B 28     mov         byte ptr [rsp+5Bh],28h
+  0000000140001125: C6 44 24 5C 2D     mov         byte ptr [rsp+5Ch],2Dh
+  000000014000112A: C6 44 24 5D 06     mov         byte ptr [rsp+5Dh],6
+  000000014000112F: C6 44 24 5E 0C     mov         byte ptr [rsp+5Eh],0Ch
+  0000000140001134: C6 44 24 5F 12     mov         byte ptr [rsp+5Fh],12h
+  0000000140001139: C6 44 24 60 18     mov         byte ptr [rsp+60h],18h
+  000000014000113E: C6 44 24 61 1E     mov         byte ptr [rsp+61h],1Eh
+  0000000140001143: C6 44 24 62 07     mov         byte ptr [rsp+62h],7
+  0000000140001148: C6 44 24 63 2A     mov         byte ptr [rsp+63h],2Ah
+  000000014000114D: C6 44 24 64 30     mov         byte ptr [rsp+64h],30h
+  0000000140001152: C6 44 24 65 36     mov         byte ptr [rsp+65h],36h
+  0000000140001157: C6 44 24 66 07     mov         byte ptr [rsp+66h],7
+  000000014000115C: C6 44 24 67 0E     mov         byte ptr [rsp+67h],0Eh
+  0000000140001161: C6 44 24 68 15     mov         byte ptr [rsp+68h],15h
+  0000000140001166: C6 44 24 69 1C     mov         byte ptr [rsp+69h],1Ch
+  000000014000116B: C6 44 24 6A 23     mov         byte ptr [rsp+6Ah],23h
+  0000000140001170: C6 44 24 6B 2A     mov         byte ptr [rsp+6Bh],2Ah
+  0000000140001175: C6 44 24 6C 31     mov         byte ptr [rsp+6Ch],31h
+  000000014000117A: C6 44 24 6D 38     mov         byte ptr [rsp+6Dh],38h
+  000000014000117F: C6 44 24 6E 3F     mov         byte ptr [rsp+6Eh],3Fh
+  0000000140001184: C6 44 24 6F 08     mov         byte ptr [rsp+6Fh],8
+  0000000140001189: C6 44 24 70 10     mov         byte ptr [rsp+70h],10h
+  000000014000118E: C6 44 24 71 18     mov         byte ptr [rsp+71h],18h
+  0000000140001193: C6 44 24 72 20     mov         byte ptr [rsp+72h],20h
+  0000000140001198: C6 44 24 73 28     mov         byte ptr [rsp+73h],28h
+  000000014000119D: C6 44 24 74 30     mov         byte ptr [rsp+74h],30h
+  00000001400011A2: C6 44 24 75 38     mov         byte ptr [rsp+75h],38h
+  00000001400011A7: C6 44 24 76 07     mov         byte ptr [rsp+76h],7
+  00000001400011AC: C6 44 24 77 48     mov         byte ptr [rsp+77h],48h
+  00000001400011B1: C6 44 24 78 09     mov         byte ptr [rsp+78h],9
+  00000001400011B6: C6 44 24 79 12     mov         byte ptr [rsp+79h],12h
+  00000001400011BB: C6 44 24 7A 1B     mov         byte ptr [rsp+7Ah],1Bh
+  00000001400011C0: C6 44 24 7B 24     mov         byte ptr [rsp+7Bh],24h
+  00000001400011C5: C6 44 24 7C 2D     mov         byte ptr [rsp+7Ch],2Dh
+  00000001400011CA: C6 44 24 7D 36     mov         byte ptr [rsp+7Dh],36h
+  00000001400011CF: C6 44 24 7E 3F     mov         byte ptr [rsp+7Eh],3Fh
+  00000001400011D4: C6 44 24 7F 48     mov         byte ptr [rsp+7Fh],48h
+  00000001400011D9: C6 84 24 80 00 00  mov         byte ptr [rsp+0000000000000080h],51h
+                    00 51
+  00000001400011E1: 48 8D 0D 28 FE 01  lea         rcx,[0000000140021010h]
+                    00
+  00000001400011E8: E8 03 01 00 00     call        00000001400012F0
+  00000001400011ED: 90                 nop
+  00000001400011EE: C7 44 24 24 00 00  mov         dword ptr [rsp+24h],0
+                    00 00
+  00000001400011F6: EB 0A              jmp         0000000140001202
+  00000001400011F8: 8B 44 24 24        mov         eax,dword ptr [rsp+24h]
+  00000001400011FC: FF C0              inc         eax
+  00000001400011FE: 89 44 24 24        mov         dword ptr [rsp+24h],eax
+  0000000140001202: 83 7C 24 24 09     cmp         dword ptr [rsp+24h],9
+  0000000140001207: 73 5B              jae         0000000140001264
+  0000000140001209: C7 44 24 20 00 00  mov         dword ptr [rsp+20h],0
+                    00 00
+  0000000140001211: EB 0A              jmp         000000014000121D
+  0000000140001213: 8B 44 24 20        mov         eax,dword ptr [rsp+20h]
+  0000000140001217: FF C0              inc         eax
+  0000000140001219: 89 44 24 20        mov         dword ptr [rsp+20h],eax
+  000000014000121D: 83 7C 24 20 09     cmp         dword ptr [rsp+20h],9
+  0000000140001222: 73 3E              jae         0000000140001262
+  0000000140001224: 8B 44 24 24        mov         eax,dword ptr [rsp+24h]
+  0000000140001228: 48 6B C0 09        imul        rax,rax,9
+  000000014000122C: 48 8D 44 04 30     lea         rax,[rsp+rax+30h]
+  0000000140001231: 8B 4C 24 20        mov         ecx,dword ptr [rsp+20h]
+  0000000140001235: 0F B6 04 08        movzx       eax,byte ptr [rax+rcx]
+  0000000140001239: 8B 4C 24 24        mov         ecx,dword ptr [rsp+24h]
+  000000014000123D: FF C1              inc         ecx
+  000000014000123F: 8B 54 24 20        mov         edx,dword ptr [rsp+20h]
+  0000000140001243: FF C2              inc         edx
+  0000000140001245: 0F AF CA           imul        ecx,edx
+  0000000140001248: 3B C1              cmp         eax,ecx
+  000000014000124A: 74 14              je          0000000140001260
+  000000014000124C: 8B 44 24 20        mov         eax,dword ptr [rsp+20h]
+  0000000140001250: FF C0              inc         eax
+  0000000140001252: 8B 4C 24 24        mov         ecx,dword ptr [rsp+24h]
+  0000000140001256: FF C1              inc         ecx
+  0000000140001258: 8B D0              mov         edx,eax
+  000000014000125A: E8 A1 FD FF FF     call        0000000140001000
+  000000014000125F: 90                 nop
+  0000000140001260: EB B1              jmp         0000000140001213
+  0000000140001262: EB 94              jmp         00000001400011F8
+  0000000140001264: 48 8D 0D AD FD 01  lea         rcx,[0000000140021018h]
+                    00
+  000000014000126B: E8 80 00 00 00     call        00000001400012F0
+  0000000140001270: 33 C0              xor         eax,eax
+  0000000140001272: 48 8B 8C 24 90 00  mov         rcx,qword ptr [rsp+0000000000000090h]
+                    00 00
+  000000014000127A: 48 33 CC           xor         rcx,rsp
+  000000014000127D: E8 DE 02 00 00     call        0000000140001560
+  0000000140001282: 48 81 C4 A8 00 00  add         rsp,0A8h
+                    00
+  0000000140001289: C3                 ret

@@ -1,0 +1,128 @@
+全局数组 C 版本：最终 EXE 的真实反汇编逐条注释
+源码：CHECKG.c；程序：CHECKG.EXE
+编译器：MSVC 19.51.36248，Windows x64，/Od /Ob0 /W4 /MT。
+以下不是 8086 代码；x64 参数按 RCX、RDX、R8、R9 传递。
+row 与 column 仍是 32 位 unsigned int，table 元素是 8 位 unsigned char。
+地址为链接时首选地址，运行时可能因 ASLR 重定位。
+每条机器码均与最终 EXE 字节核对，函数首址与 MAP 符号核对。
+只列 main 与 print_error，不展开 C 运行库。
+C 原生运行受本机 Code Integrity 策略拦截（WinError 4551），未声明已运行成功。
+EXE SHA-256：690c551a4b965d282354f7b539c52462c162ba3bcb064663dc53b9a3d1f50c45
+共 56 条指令。
+
+
+print_error:
+0000000140001000: 89 54 24 10                mov         dword ptr [rsp+10h],edx
+    ; 将第二个参数 column（EDX）写入调用者预留的参数槽。
+0000000140001004: 89 4C 24 08                mov         dword ptr [rsp+8],ecx
+    ; 将第一个参数 row（ECX）写入调用者预留的参数槽。
+0000000140001008: 48 83 EC 28                sub         rsp,28h
+    ; 分配 28h 字节栈空间，含调用 printf 所需的影子空间及对齐。
+000000014000100C: 44 8B 44 24 38             mov         r8d,dword ptr [rsp+38h]
+    ; R8D = column，作为 printf 的第三个参数。
+0000000140001011: 8B 54 24 30                mov         edx,dword ptr [rsp+30h]
+    ; EDX = row，作为 printf 的第二个参数。
+0000000140001015: 48 8D 0D 3C 00 02 00       lea         rcx,[0000000140021058h]
+    ; RCX 指向格式字符串 "%u %u error\n"，作为 printf 的第一个参数。
+000000014000101C: E8 1F 01 00 00             call        0000000140001140
+    ; 调用链接后的 printf，显示一组错误坐标。
+0000000140001021: 90                         nop
+    ; 空操作，编译器保留的指令。
+0000000140001022: 48 83 C4 28                add         rsp,28h
+    ; 回收 print_error 的 28h 字节栈空间。
+0000000140001026: C3                         ret
+    ; RET 弹出返回地址，返回 main 中 CALL 后的指令。
+
+main:
+0000000140001030: 48 83 EC 38                sub         rsp,38h
+    ; 为 main 分配 38h（56）字节栈空间；全局 table 不在本栈帧中。
+0000000140001034: 48 8D 0D 2D 00 02 00       lea         rcx,[0000000140021068h]
+    ; RCX 指向标题字符串 "x y\n"。
+000000014000103B: E8 00 01 00 00             call        0000000140001140
+    ; 调用 printf 显示坐标标题。
+0000000140001040: 90                         nop
+    ; 空操作。
+0000000140001041: C7 44 24 24 00 00 00 00    mov         dword ptr [rsp+24h],0
+    ; 局部变量 row = 0（显示时转换为从 1 开始的行号）。
+0000000140001049: EB 0A                      jmp         0000000140001055
+    ; 首次进入外循环时跳到 row<9 的条件检查。
+000000014000104B: 8B 44 24 24                mov         eax,dword ptr [rsp+24h]
+    ; 读取 row。
+000000014000104F: FF C0                      inc         eax
+    ; 外循环更新：row 加 1。
+0000000140001051: 89 44 24 24                mov         dword ptr [rsp+24h],eax
+    ; 将更新后的 row 写回 [rsp+24h]。
+0000000140001055: 83 7C 24 24 09             cmp         dword ptr [rsp+24h],9
+    ; 比较 row 与 9。
+000000014000105A: 73 63                      jae         00000001400010BF
+    ; 无符号 row>=9 时退出外循环；共检查 9 行。
+000000014000105C: C7 44 24 20 00 00 00 00    mov         dword ptr [rsp+20h],0
+    ; 每一行开始时 column = 0。
+0000000140001064: EB 0A                      jmp         0000000140001070
+    ; 首次进入内循环时跳到 column<9 的条件检查。
+0000000140001066: 8B 44 24 20                mov         eax,dword ptr [rsp+20h]
+    ; 读取 column。
+000000014000106A: FF C0                      inc         eax
+    ; 内循环更新：column 加 1。
+000000014000106C: 89 44 24 20                mov         dword ptr [rsp+20h],eax
+    ; 将更新后的 column 写回 [rsp+20h]。
+0000000140001070: 83 7C 24 20 09             cmp         dword ptr [rsp+20h],9
+    ; 比较 column 与 9。
+0000000140001075: 73 46                      jae         00000001400010BD
+    ; 无符号 column>=9 时退出当前行，进入外循环更新。
+0000000140001077: 8B 44 24 24                mov         eax,dword ptr [rsp+24h]
+    ; EAX = row；写 EAX 同时清零 RAX 的高 32 位。
+000000014000107B: 48 6B C0 09                imul        rax,rax,9
+    ; RAX = row*9，计算二维字节数组的行偏移；每行 9 字节。
+000000014000107F: 48 8D 0D 7A FF 01 00       lea         rcx,[0000000140021000h]
+    ; 利用 RIP 相对寻址取得全局 table 的地址 0000000140021000。
+0000000140001086: 48 03 C8                   add         rcx,rax
+    ; RCX = table 的基址 + row*9。
+0000000140001089: 48 8B C1                   mov         rax,rcx
+    ; 将当前行首地址转入 RAX。
+000000014000108C: 8B 4C 24 20                mov         ecx,dword ptr [rsp+20h]
+    ; ECX = column，作为列偏移。
+0000000140001090: 0F B6 04 08                movzx       eax,byte ptr [rax+rcx]
+    ; 读取 table[row][column] 的一个字节，零扩展为 EAX。
+0000000140001094: 8B 4C 24 24                mov         ecx,dword ptr [rsp+24h]
+    ; 读取 row，以便计算应有的乘积。
+0000000140001098: FF C1                      inc         ecx
+    ; ECX = row+1，对应题目的行号 1..9。
+000000014000109A: 8B 54 24 20                mov         edx,dword ptr [rsp+20h]
+    ; 读取 column。
+000000014000109E: FF C2                      inc         edx
+    ; EDX = column+1，对应题目的列号 1..9。
+00000001400010A0: 0F AF CA                   imul        ecx,edx
+    ; ECX = (row+1)*(column+1)，本题结果为 1..81。
+00000001400010A3: 3B C1                      cmp         eax,ecx
+    ; 比较数组中的实际数值 EAX 与正确乘积 ECX。
+00000001400010A5: 74 14                      je          00000001400010BB
+    ; 相等时跳过报错；不相等时继续准备过程参数。
+00000001400010A7: 8B 44 24 20                mov         eax,dword ptr [rsp+20h]
+    ; 读取 column，准备显示坐标。
+00000001400010AB: FF C0                      inc         eax
+    ; EAX = column+1，转换为从 1 开始的列号。
+00000001400010AD: 8B 4C 24 24                mov         ecx,dword ptr [rsp+24h]
+    ; 读取 row。
+00000001400010B1: FF C1                      inc         ecx
+    ; ECX = row+1，设置 print_error 的第一个参数。
+00000001400010B3: 8B D0                      mov         edx,eax
+    ; EDX = column+1，设置 print_error 的第二个参数。
+00000001400010B5: E8 46 FF FF FF             call        0000000140001000
+    ; CALL print_error，输出错误坐标；返回后继续扫描。
+00000001400010BA: 90                         nop
+    ; 空操作。
+00000001400010BB: EB A9                      jmp         0000000140001066
+    ; 跳回 column++，检查下一个元素。
+00000001400010BD: EB 8C                      jmp         000000014000104B
+    ; 跳回 row++，开始下一行。
+00000001400010BF: 48 8D 0D AA FF 01 00       lea         rcx,[0000000140021070h]
+    ; RCX 指向结束字符串 "\naccomplish!\n"。
+00000001400010C6: E8 75 00 00 00             call        0000000140001140
+    ; 调用 printf 显示检查结束。
+00000001400010CB: 33 C0                      xor         eax,eax
+    ; EAX = 0，设置 main 的返回值。
+00000001400010CD: 48 83 C4 38                add         rsp,38h
+    ; 回收 main 的 38h 字节栈空间。
+00000001400010D1: C3                         ret
+    ; 返回调用 main 的 C 运行库启动代码。
