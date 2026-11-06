@@ -1,0 +1,50 @@
+u cs:006a 0070
+u cs:00a2 0114
+g=0000 006a
+4t
+d ss:0fc0 0fff
+g 00c2 00cc 0114
+t
+d ss:0fc0 0fff
+g 00c2 00cc 0114
+t
+d ss:0fc0 0fff
+g 00c2 00cc 0114
+t
+d ss:0fc0 0fff
+g 00c2 00cc 0114
+t
+d ss:0fc0 0fff
+g 00c2 00cc 0114
+t
+d ss:0fc0 0fff
+g 00c2 00cc 0114
+t
+d ss:0fc0 0fff
+g 00c2 00cc 0114
+t
+d ss:0fc0 0fff
+g 00c2 00cc 0114
+t
+d ss:0fc0 0fff
+g 00c2 00cc 0114
+t
+d ss:0fc0 0fff
+g 00c2 00cc 0114
+t
+d ss:0fc0 0fff
+g 00c2 00cc 0114
+t
+d ss:0fc0 0fff
+g 00c2 00cc 0114
+t
+d ss:0fc0 0fff
+g 00c2 00cc 0114
+t
+d ss:0fc0 0fff
+g 0071
+r
+d ds:08ae 08b1
+d ss:0000 0001
+g
+q

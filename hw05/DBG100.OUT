@@ -1,0 +1,24 @@
+-g=0000 0071
+Please input n (1-100):
+100
+AX=0064 BX=000A CX=0000 DX=0000 SP=1000 BP=0000 SI=0834 DI=0000 
+DS=0840 ES=0730 SS=0740 CS=08D9 IP=0071 NV UP EI PL NZ NA PO NC 
+08D9:0071 81FC0010          CMP     SP,1000
+-r
+AX=0064 BX=000A CX=0000 DX=0000 SP=1000 BP=0000 SI=0834 DI=0000 
+DS=0840 ES=0730 SS=0740 CS=08D9 IP=0071 NV UP EI PL NZ NA PO NC 
+08D9:0071 81FC0010          CMP     SP,1000
+-d ds:08ae 08b1
+0840:08A0                         -                  86 0A               ..
+0840:08B0  00 10                  -                        ..
+-d ss:0000 0001
+0740:0000  5A A5                  -                        Z.
+-d ds:0834 0848
+0840:0830              05 07 00 05-01 09 01 06 02 09 07 01     ............
+0840:0840  08 04 08 04 02 02 04 05-03                      .........
+-g
+The Fibonacci number:
+354224848179261915075
+
+Program terminated normally (0000)
+-q
