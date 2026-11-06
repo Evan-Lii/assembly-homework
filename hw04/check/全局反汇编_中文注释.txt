@@ -6,7 +6,7 @@ row 与 column 仍是 32 位 unsigned int，table 元素是 8 位 unsigned char�
 地址为链接时首选地址，运行时可能因 ASLR 重定位。
 每条机器码均与最终 EXE 字节核对，函数首址与 MAP 符号核对。
 只列 main 与 print_error，不展开 C 运行库。
-C 原生运行受本机 Code Integrity 策略拦截（WinError 4551），未声明已运行成功。
+C 运行记录：2026-10-30 首次验证受系统策略拦截；2026-11-06 复核原EXE运行通过，输出与汇编版一致。
 EXE SHA-256：690c551a4b965d282354f7b539c52462c162ba3bcb064663dc53b9a3d1f50c45
 共 56 条指令。
 

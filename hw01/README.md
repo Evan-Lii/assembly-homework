@@ -1,5 +1,7 @@
 # 作业 1 Hello World
 
+[调试过程与学习心得](调试与学习记录.md)
+
 ## 要求与文件
 
 - [HELLO.ASM](HELLO.ASM)：传统汇编源码。
